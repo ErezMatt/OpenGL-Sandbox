@@ -11,11 +11,17 @@ Sphere::Sphere(float x, float y, float z, float radius, int stacks, int sectors)
 	cZ{ z },
 	r{ radius }
 {
+    float radiusInv = 1.0f / radius;
+
     std::vector<unsigned int> indices = {
     };
 
     std::vector <Vertex> vertices = {
-        {glm::vec3(cX, cY + radius , cZ)},
+        {
+            glm::vec3(cX, cY + radius , cZ),
+            glm::vec2(0.5f, 0.0f),
+            glm::vec3(0.0f, -1.0f, 0.0f)
+        },
     };
 
  
@@ -33,7 +39,7 @@ Sphere::Sphere(float x, float y, float z, float radius, int stacks, int sectors)
             Vertex newV;
             newV.position = glm::vec3(x + cX, y + cY, z + cZ);
             newV.texCoords = glm::vec2(i / double(sectors+1), j / double(stacks));
-            newV.normals = glm::vec3(-(x - cX) * (1.0f / radius), -(y - cY) * (1.0f / radius), -(z - cZ) * (1.0f / radius));
+            newV.normals = glm::vec3(-(x - cX) * radiusInv, -(y - cY) * radiusInv, -(z - cZ) * radiusInv);
             vertices.push_back(newV);
         }
     }
@@ -41,7 +47,7 @@ Sphere::Sphere(float x, float y, float z, float radius, int stacks, int sectors)
     Vertex bottom;
     bottom.position = glm::vec3(cX, cY - radius, cZ);
     bottom.texCoords = glm::vec2(0.5f, 1.0f);
-    bottom.normals = glm::vec3(-(cX - cX) * (1.0f / radius), -(cY - radius - cY) * (1.0f / radius), -(cZ - cZ) * (1.0f / radius));
+    bottom.normals = glm::vec3(0.0f, 1.0f, 0.0f);
     vertices.push_back(bottom);
 
 
