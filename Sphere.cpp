@@ -21,7 +21,7 @@ Sphere::Sphere(float x, float y, float z, float radius, int stacks, int sectors)
  
     for (int j = 0; j < stacks; j++)
     {
-        for (int i = 0; i < sectors; i++)
+        for (int i = 0; i <=sectors; i++)
         {
             double theta = glm::radians((360 / double(sectors)) * i);
             double alfa = glm::radians(90 - (180 / double(stacks)) * j);
@@ -32,17 +32,16 @@ Sphere::Sphere(float x, float y, float z, float radius, int stacks, int sectors)
 
             Vertex newV;
             newV.position = glm::vec3(x + cX, y + cY, z + cZ);
-            newV.texCoords = glm::vec2(i / double(sectors), j / double(stacks));
-            newV.normals = glm::vec3(0.0f, 0.0f, 0.0f);
+            newV.texCoords = glm::vec2(i / double(sectors+1), j / double(stacks));
+            newV.normals = glm::vec3(-(x - cX) * (1.0f / radius), -(y - cY) * (1.0f / radius), -(z - cZ) * (1.0f / radius));
             vertices.push_back(newV);
         }
-       
     }
 
     Vertex bottom;
     bottom.position = glm::vec3(cX, cY - radius, cZ);
     bottom.texCoords = glm::vec2(0.5f, 1.0f);
-    bottom.normals = glm::vec3(0.0f, 0.0f, 0.0f);
+    bottom.normals = glm::vec3(-(cX - cX) * (1.0f / radius), -(cY - radius - cY) * (1.0f / radius), -(cZ - cZ) * (1.0f / radius));
     vertices.push_back(bottom);
 
 
@@ -50,26 +49,25 @@ Sphere::Sphere(float x, float y, float z, float radius, int stacks, int sectors)
     {
         for (int i = 0; i <= sectors; i++)
         {
-            indices.push_back((j - 1) * sectors + i);
-            indices.push_back((j)*sectors + i);
-            indices.push_back((j - 1) * sectors + i + 1);
+            indices.push_back((j - 1) * (sectors+1) + i);
+            indices.push_back((j)* (sectors + 1) + i);
+            indices.push_back((j - 1) * (sectors + 1) + i + 1);
 
-            indices.push_back((j - 1) * sectors + i + 1);
-            indices.push_back((j)*sectors + i);
-            indices.push_back((j)*sectors + i + 1);
+            indices.push_back((j - 1) * (sectors + 1) + i + 1);
+            indices.push_back((j)* (sectors + 1) + i);
+            indices.push_back((j)* (sectors + 1) + i + 1);
         }
 
     }
 
-    for (int i = 1; i < sectors; i++)
+    for (int i = 1; i <=sectors; i++)
     {
-        indices.push_back((stacks - 1) * sectors + i);
+        indices.push_back((stacks - 1) * (sectors + 1) + i);
         indices.push_back(vertices.size() - 1);
-        indices.push_back((stacks - 1) * sectors + i + 1);
+        indices.push_back((stacks - 1) * (sectors + 1) + i + 1);
     }
 
 
-    Light::calculateAverageNormals(vertices, indices);
     mesh.create(vertices, indices);
 }
 
