@@ -96,9 +96,7 @@ void Shader::setPointLights(const std::vector<std::unique_ptr<PointLight>> const
     
     SetUniform1i("pointLightCount", lightCount);
 
-    for (size_t i = 0; i < lightCount; i++)
-    {
-
+    for (size_t i = 0; i < lightCount; i++) {
         glm::vec3 color = pLights[i]->getColor();
         glm::vec3 position = pLights[i]->getPosition();
         
@@ -115,38 +113,35 @@ void Shader::setPointLights(const std::vector<std::unique_ptr<PointLight>> const
     }
 }
 
-void Shader::setSpotLights(const std::vector<std::unique_ptr<SpotLight>> const& pLights)
+void Shader::setSpotLights(const std::vector<std::unique_ptr<SpotLight>> const& sLights)
 {
-    int lightCount = pLights.size();
+    int lightCount = sLights.size();
     if (lightCount > MAX_SPOT_LIGHTS) lightCount = MAX_SPOT_LIGHTS;
 
 
     SetUniform1i("spotLightCount", lightCount);
 
-    for (size_t i = 0; i < lightCount; i++)
-    {
-
-        glm::vec3 color = pLights[i]->getColor();
-        glm::vec3 position = pLights[i]->getPosition();
-        glm::vec3 direction = pLights[i]->getDirection();
+    for (size_t i = 0; i < lightCount; i++) {
+        glm::vec3 color = sLights[i]->getColor();
+        glm::vec3 position = sLights[i]->getPosition();
+        glm::vec3 direction = sLights[i]->getDirection();
 
         std::string uniformName = "spotLights[" + std::to_string(i) + "].";
 
         SetUniform3f(uniformName + "base.base.color", color.x, color.y, color.z);
-        SetUniform1f(uniformName + "base.base.ambientIntensity", pLights[i]->getAmbientIntensity());
+        SetUniform1f(uniformName + "base.base.ambientIntensity", sLights[i]->getAmbientIntensity());
         SetUniform3f(uniformName + "base.position", position.x, position.y, position.z);
-        SetUniform1f(uniformName + "base.base.diffuseIntensity", pLights[i]->getDiffuseIntensity());
+        SetUniform1f(uniformName + "base.base.diffuseIntensity", sLights[i]->getDiffuseIntensity());
 
-        SetUniform1f(uniformName + "base.exponent", pLights[i]->getExponent());
-        SetUniform1f(uniformName + "base.linear", pLights[i]->getLinear());
-        SetUniform1f(uniformName + "base.constant", pLights[i]->getConstant());
+        SetUniform1f(uniformName + "base.exponent", sLights[i]->getExponent());
+        SetUniform1f(uniformName + "base.linear", sLights[i]->getLinear());
+        SetUniform1f(uniformName + "base.constant", sLights[i]->getConstant());
 
         SetUniform3f(uniformName + "direction", direction.x, direction.y, direction.z);
-        SetUniform1f(uniformName + "edge", pLights[i]->getCalculationEdge());
+        SetUniform1f(uniformName + "edge", sLights[i]->getCalculationEdge());
 
     }
 }
-
 
 int Shader::getUniformLocation(const std::string& name)
 {
@@ -172,8 +167,7 @@ void Shader::unbind() const
 }
 void Shader::clear()
 {
-    if (shader != 0) 
-    {
+    if (shader != 0) {
         glDeleteProgram(shader);
         shader = 0;
     }
@@ -199,8 +193,7 @@ void Shader::compile(GLuint program, const std::string& shadetCode, GLenum shade
 
     int result;
     glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-    if (result == GL_FALSE)
-    {
+    if (result == GL_FALSE) {
         int length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
         char* message = (char*)alloca(length * sizeof(char));

@@ -43,7 +43,7 @@ public:
 	void setLight(const Light& light);
 	void setDirectionalLight(const DirectionalLight& light);
 	void setPointLights(const std::vector<std::unique_ptr<PointLight>> const& pLights);
-	void setSpotLights(const std::vector<std::unique_ptr<SpotLight>> const& pLights);
+	void setSpotLights(const std::vector<std::unique_ptr<SpotLight>> const& sLights);
 
 private:
 	GLuint shader;

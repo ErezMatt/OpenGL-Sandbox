@@ -1,30 +1,52 @@
 #include "Texture.h"
+
+#include <iostream>
+
 #include "stb_image/stb_image.h"
 
-Texture::Texture() :
-	textureID{ 0 },
-	width{ 0 },
-	height{ 0 },
-	bitDepth{ 0 },
-	fileLocation{ "" }
-{
-}
-
 Texture::Texture(const std::string& fileLocation) :
-	textureID{ 0 },
-	width{ 0 },
-	height{ 0 },
-	bitDepth{ 0 },
-	fileLocation{ fileLocation }
+	textureID{0},
+	width{0},
+	height{0},
+	bitDepth{0},
+	fileLocation{fileLocation}
 {
 }
 
-bool Texture::load()
+Texture::Texture(Texture&& other) noexcept :
+	textureID(other.textureID),
+	width(other.width), 
+	height(other.height),
+	bitDepth(other.bitDepth), 
+	fileLocation(std::move(other.fileLocation)) 
 {
-	unsigned char* texData = stbi_load(fileLocation.c_str(), &width, &height, &bitDepth, 4);
-	if (!texData) {
+	other.textureID = 0;
+}
+
+Texture& Texture::operator=(Texture&& other) noexcept {
+	if (this != &other) {
+		clear();
+		textureID = other.textureID;
+		width = other.width;
+		height = other.height;
+		bitDepth = other.bitDepth;
+		fileLocation = std::move(other.fileLocation);
+		other.textureID = 0;
+	}
+	return *this;
+}
+
+bool Texture::load(Format format)
+{
+	clear();
+
+	int channels = (format == Format::RGBA) ? 4 : 3;
+	unsigned char* textureBuffer = stbi_load(fileLocation.c_str(), &width, &height, &bitDepth, channels);
+	if (!textureBuffer) {
+		std::cerr << "ERROR: Failed to load texture: " << fileLocation << std::endl;
 		return false;
 	}
+
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -33,54 +55,34 @@ bool Texture::load()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+	GLenum glFormat = (format == Format::RGBA) ? GL_RGBA : GL_RGB;
+	glTexImage2D(GL_TEXTURE_2D, 0, glFormat, width, height, 0, glFormat, GL_UNSIGNED_BYTE, textureBuffer);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	stbi_image_free(texData);
+	if (textureBuffer)
+		stbi_image_free(textureBuffer);
 
 	return true;
 }
 
-bool Texture::loadNoAlfa()
+void Texture::use(unsigned int slot)
 {
-	unsigned char* texData = stbi_load(fileLocation.c_str(), &width, &height, &bitDepth, 0);
-	if (!texData) {
-		return false;
-	}
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	stbi_image_free(texData);
-
-	return true;
-}
-
-void Texture::use()
-{
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 }
 
 void Texture::clear()
-{
-	glDeleteTextures(1, &textureID);
-	textureID = 0;
-	width = 0;
-	height = 0;
-	bitDepth = 0;
-	fileLocation = "";
+{	
+	if (textureID) {
+		glDeleteTextures(1, &textureID);
+		textureID = 0;
+		width = 0;
+		height = 0;
+		bitDepth = 0;
+		fileLocation.clear();
+	}
 }
 
 Texture::~Texture()

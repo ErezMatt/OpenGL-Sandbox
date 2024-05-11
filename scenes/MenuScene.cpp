@@ -1,4 +1,5 @@
 #include "MenuScene.h"
+#include "ModelScene.h"
 #include "ColorScene.h"
 #include "PyramidInterpolationScene.h"
 #include "CameraScene.h"
@@ -92,6 +93,12 @@ void MenuScene::imGuiRender()
 	{
 		_data->window.reset();
 		_data->sceneManager.addScene(std::unique_ptr<Scene>(std::make_unique<SpotLightScene>(_data)), false);
+	}
+
+	if (ImGui::Button("Model"))
+	{
+		_data->window.reset();
+		_data->sceneManager.addScene(std::unique_ptr<Scene>(std::make_unique<ModelScene>(_data)), false);
 	}
 
 }

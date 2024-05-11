@@ -18,8 +18,8 @@ public:
 
 	int init();
 
-	GLfloat getBufferWidth() const { return bufferWidth; }
-	GLfloat getBufferHeight() const { return bufferHeight; }
+	GLfloat getBufferWidth() const { return static_cast<GLfloat>(bufferWidth); }
+	GLfloat getBufferHeight() const { return static_cast<GLfloat>(bufferHeight); }
 	bool getKey(unsigned int keyNum) const;
 	GLfloat getXChange();
 	GLfloat getYChange();
