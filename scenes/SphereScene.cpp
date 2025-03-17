@@ -20,7 +20,7 @@ void SphereScene::init()
     dullMaterial = Material(0.2f, 4);
 
     camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.5f);
-    metalTexture = Texture("res/textures/fullmapb.png");
+    metalTexture = Texture("res/textures/earth.png");
     metalTexture.load();
 
     light = DirectionalLight(1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 2.0f, -1.0f, -2.0f);
@@ -43,14 +43,14 @@ void SphereScene::update(float dT)
         cameraMode = false;
     }
 
-    if (cameraMode)
-        _data->window.createCallbacks();
-    else
-        _data->window.destroyCallbacks();
-
-
-    camera.keyControl(_data->window, dT);
-    camera.mouseControl(_data->window.getXChange(), _data->window.getYChange());
+    if (cameraMode) {
+        _data->window.disableCursor();
+        camera.keyControl(_data->window, dT);
+        camera.mouseControl(_data->window.getXChange(), _data->window.getYChange());
+    }
+    else {
+        _data->window.enableCursor();
+    }
 }
 
 void SphereScene::render()

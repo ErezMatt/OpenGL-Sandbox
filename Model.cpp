@@ -23,7 +23,7 @@ bool Model::load(const std::string& filePath)
 
 	loadNode(scene->mRootNode, scene);
 
-	std::string textureDir = (std::filesystem::path(filePath).parent_path() / std::filesystem::path("Textures/")).string();
+	std::string textureDir = (std::filesystem::path(filePath).parent_path() / std::filesystem::path("textures/")).string();
 	loadMaterials(scene, textureDir);
 
 	return true;

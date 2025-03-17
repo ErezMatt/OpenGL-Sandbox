@@ -5,8 +5,7 @@ Window::Window() :
     width{ 800 },
     height{ 600 }
 {
-    for (size_t i = 0; i < NUMBER_OF_KEYS; ++i)
-    {
+    for (size_t i = 0; i < NUMBER_OF_KEYS; ++i) {
         keys[i] = 0;
     }
 }
@@ -16,8 +15,7 @@ Window::Window(GLint windowWidth, GLint windowHeight) :
     width{ windowWidth },
     height{ windowHeight }
 {
-    for (size_t i = 0; i < NUMBER_OF_KEYS; ++i)
-    {
+    for (size_t i = 0; i < NUMBER_OF_KEYS; ++i) {
         keys[i] = 0;
     }
 }
@@ -31,8 +29,7 @@ Window::~Window()
 
 int Window::init()
 {
-    if (!glfwInit())
-    {
+    if (!glfwInit()) {
         std::cout << "GLFW init failed!" << std::endl;
         glfwTerminate();
         return -1;
@@ -44,8 +41,7 @@ int Window::init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     window = glfwCreateWindow(width, height, "Sandbox Window", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         std::cout << "GLFW window creation failed!" << std::endl;
         glfwTerminate();
         return -1;
@@ -57,8 +53,7 @@ int Window::init()
 
     glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK)
-    {
+    if (glewInit() != GLEW_OK) {
         std::cout << "GLEW init failed" << std::endl;
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -71,21 +66,22 @@ int Window::init()
 
     glfwSetWindowUserPointer(this->window, this);
 
+    createCallbacks();
+
     return 0;
 }
 
 bool Window::getKey(unsigned int keyNum) const
 {
-    if (keyNum >= 0 && keyNum < NUMBER_OF_KEYS) {
+    if (keyNum >= 0 && keyNum < NUMBER_OF_KEYS)
         return keys[keyNum];
-    }
+    return false;
 }
 
 void Window::resetKey(unsigned int keyNum)
 {
-    if (keyNum >= 0 && keyNum < NUMBER_OF_KEYS) {
+    if (keyNum >= 0 && keyNum < NUMBER_OF_KEYS)
         keys[keyNum] = false;
-    }
 }
 
 void Window::reset()
@@ -115,30 +111,34 @@ void Window::createCallbacks()
 {
     glfwSetKeyCallback(window, handleKeys);
     glfwSetCursorPosCallback(window, handleMouse);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Window::destroyCallbacks()
 {
     glfwSetKeyCallback(window, nullptr);
     glfwSetCursorPosCallback(window, nullptr);
+}
+
+void Window::enableCursor()
+{
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+void Window::disableCursor()
+{
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
 {
     Window* newWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
-    if (newWindow)
-    {
-        if (key >= 0 && key < NUMBER_OF_KEYS)
-        {
-            if (action == GLFW_PRESS)
-            {
+    if (newWindow) {
+        if (key >= 0 && key < NUMBER_OF_KEYS) {
+            if (action == GLFW_PRESS) {
                 newWindow->keys[key] = true;
             }
-            else if(action == GLFW_RELEASE)
-            {
+            else if(action == GLFW_RELEASE) {
                 newWindow->keys[key] = false;
             }
         }
@@ -149,10 +149,8 @@ void Window::handleMouse(GLFWwindow* window, double xPos, double yPos)
 {
     Window* newWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
-    if (newWindow)
-    {
-        if (!newWindow->mouseFirstMoved)
-        {
+    if (newWindow) {
+        if (!newWindow->mouseFirstMoved) {
             newWindow->lastX = xPos;
             newWindow->lastY = yPos;
             newWindow->mouseFirstMoved = true;

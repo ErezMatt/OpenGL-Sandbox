@@ -56,7 +56,7 @@ void ModelScene::init()
     zMaterial = Material(0.0f, 1);
 
     // Model used from free3d.com : https://free3d.com/pl/3d-model/pearlturtle-v1--573902.html
-    turtleModel.load("Models/Turtle/13103_pearlturtle_v1_l2.obj");
+    turtleModel.load("res/models/Turtle/13103_pearlturtle_v1_l2.obj");
     camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 5.0f, 0.5f);
     metalTexture = Texture("res/textures/metal.png");
     metalTexture.load();
@@ -115,14 +115,14 @@ void ModelScene::update(float dT)
         cameraMode = false;
     }
 
-    if (cameraMode)
-        _data->window.createCallbacks();
-    else
-        _data->window.destroyCallbacks();
-
-
-    camera.keyControl(_data->window, dT);
-    camera.mouseControl(_data->window.getXChange(), _data->window.getYChange());
+    if (cameraMode) {
+        _data->window.disableCursor();
+        camera.keyControl(_data->window, dT);
+        camera.mouseControl(_data->window.getXChange(), _data->window.getYChange());
+    }
+    else {
+        _data->window.enableCursor();
+    }
 }
 
 void ModelScene::render()

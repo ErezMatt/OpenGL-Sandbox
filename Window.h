@@ -5,9 +5,9 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "imgui/imgui_impl_glfw.h"
+#include "imgui.h"
+#include "imgui_impl_opengl3.h"
+#include "imgui_impl_glfw.h"
 
 class Window
 {
@@ -34,6 +34,9 @@ public:
 
 	void createCallbacks();
 	void destroyCallbacks();
+
+	void enableCursor();
+	void disableCursor();
 
 private:
 	GLFWwindow* window;

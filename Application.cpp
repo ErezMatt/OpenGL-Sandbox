@@ -62,7 +62,7 @@ void Application::update()
         {
             if (typeid(MenuScene) != typeid(*_data->sceneManager.getScene()) && ImGui::Button("<-"))
             {
-                _data->window.destroyCallbacks();
+               // _data->window.destroyCallbacks();
                 _data->sceneManager.eraseScene();
             }
         }

@@ -56,14 +56,14 @@ void AmbientLightScene::update(float dT)
         cameraMode = false;
     }
 
-    if (cameraMode)
-        _data->window.createCallbacks();
-    else
-        _data->window.destroyCallbacks();
-
-
-    camera.keyControl(_data->window, dT);
-    camera.mouseControl(_data->window.getXChange(), _data->window.getYChange());
+    if (cameraMode) {
+        _data->window.disableCursor();
+        camera.keyControl(_data->window, dT);
+        camera.mouseControl(_data->window.getXChange(), _data->window.getYChange());
+    }
+    else {
+        _data->window.enableCursor();
+    }
 }
 
 void AmbientLightScene::render()
