@@ -8,13 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Define source directories
 set(SCENES_DIR ${CMAKE_SOURCE_DIR}/Scenes)
 # Create executable
-file(GLOB SOURCES
-    *.cpp
-    "${SCENES_DIR}/*.cpp"
+file(GLOB_RECURSE  SOURCES
+	"${CMAKE_SOURCE_DIR}/main.cpp"
+    "${CMAKE_SOURCE_DIR}/src/*.cpp"
 )
-file(GLOB HEADERS 
-	*.h
-	"${SCENES_DIR}/*.h"
+file(GLOB_RECURSE  HEADERS 
+	"${CMAKE_SOURCE_DIR}/src/*.h"
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
@@ -115,4 +114,11 @@ target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
 # Include directories
 include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/src/camera)
+include_directories(${PROJECT_SOURCE_DIR}/src/core)
+include_directories(${PROJECT_SOURCE_DIR}/src/graphics)
+include_directories(${PROJECT_SOURCE_DIR}/src/graphics/geometry)
+include_directories(${PROJECT_SOURCE_DIR}/src/graphics/lightning)
+include_directories(${PROJECT_SOURCE_DIR}/src/scenes)
 
